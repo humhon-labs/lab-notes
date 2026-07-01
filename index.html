@@ -4,19 +4,48 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Humhon Labs Notes</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script>
+    (function () {
+      try { document.documentElement.setAttribute('data-theme', localStorage.getItem('labnotes-theme') || 'dark'); }
+      catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+    })();
+  </script>
 </head>
 <body>
-  <h1>Humhon Labs Notes</h1>
-  <p>기술 지식과 실무 경험을 기록하고 공유합니다.</p>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">🧪</span>
+      <span class="brand-text"><strong>Humhon Labs Notes</strong><small>기술 지식과 실무 경험을 기록하고 공유합니다</small></span>
+    </a>
+    <div class="header-actions">
+      <input id="search" type="search" placeholder="검색: 제목·태그·요약" aria-label="글 검색" />
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="테마 전환">🌙</button>
+    </div>
+  </header>
 
-  <hr />
+  <nav id="category-nav" class="category-nav" aria-label="카테고리"></nav>
 
-  <h2>Topics</h2>
-  <ul>
-    <li>AI · Data</li>
-    <li>Backend · Infrastructure</li>
-    <li>Product · Operations</li>
-    <li>Project Management</li>
-  </ul>
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h2>태그</h2>
+        <button id="clear-tags" class="text-btn" type="button" style="display:none">초기화</button>
+      </div>
+      <div id="tag-filter" class="tag-filter"></div>
+    </aside>
+
+    <section class="content">
+      <div id="result-count" class="result-count" aria-live="polite"></div>
+      <div id="post-list" class="post-list"></div>
+      <p id="empty-state" class="empty" style="display:none">조건에 맞는 글이 없습니다.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">© Humhon Labs Notes</footer>
+
+  <script src="data/posts.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/theme.js"></script>
 </body>
 </html>
