@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>글 · Humhon Labs Notes</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script>
+    (function () {
+      try { document.documentElement.setAttribute('data-theme', localStorage.getItem('labnotes-theme') || 'dark'); }
+      catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+    })();
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">🧪</span>
+      <span class="brand-text"><strong>Humhon Labs Notes</strong><small>기술 지식과 실무 경험을 기록하고 공유합니다</small></span>
+    </a>
+    <div class="header-actions">
+      <a class="text-btn" href="index.html">← 목록</a>
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="테마 전환">🌙</button>
+    </div>
+  </header>
+
+  <main class="layout single">
+    <article class="post">
+      <header id="post-meta" class="post-meta"></header>
+      <div id="post-body" class="post-body markdown"></div>
+      <p class="back"><a href="index.html">← 목록으로 돌아가기</a></p>
+    </article>
+  </main>
+
+  <footer class="site-footer">© Humhon Labs Notes</footer>
+
+  <script src="data/posts.js"></script>
+  <script src="assets/marked.min.js"></script>
+  <script src="assets/post.js"></script>
+  <script src="assets/theme.js"></script>
+</body>
+</html>
