@@ -1,0 +1,13 @@
+# Claude Code / 개발 도구 아티팩트 (사이트 산출물 아님)
+.claude/
+.superpowers/
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Node (이 프로젝트는 빌드 없음 — 방어용)
+node_modules/
+npm-debug.log*
