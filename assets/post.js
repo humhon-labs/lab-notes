@@ -30,6 +30,8 @@
 
   fetch('content/' + encodeURIComponent(slug) + '.md')
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+    // 신뢰-콘텐츠 전제: content/*.md는 직접 작성한 문서라 marked 출력을 살균 없이 렌더한다
+    // (콜아웃/표/<details> 등 의도한 HTML 통과 필요). 외부 기여 마크다운을 받게 되면 살균기를 추가할 것.
     .then(function (md) { bodyEl.innerHTML = marked.parse(md); })
     .catch(function () {
       bodyEl.innerHTML = '<p class="notice">본문을 불러오지 못했습니다. 이 사이트는 정적 서버로 열어야 합니다(예: <code>python3 -m http.server</code>). 파일을 직접 연 경우 브라우저 보안 정책으로 마크다운을 불러올 수 없습니다.</p>';
