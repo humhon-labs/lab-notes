@@ -10,6 +10,15 @@ window.LAB_NOTES = {
       source: 'https://x.com/elcopymaster/status/2071975894290248160'
     },
     {
+      slug: 'marc-lou-solo-saas',
+      title: '마크 루(Marc Lou)가 혼자서 SaaS·AI 제품을 키운 7가지 방법',
+      category: 'Product·Ops',
+      tags: ['경제', '중요'],
+      date: '2026-06-27',
+      summary: '발리 기반 솔로프러너 Marc Lou의 1인 SaaS 성공 방법론 7가지 — 빠른 출시, 결제로 검증, 퍼스널 브랜드와 제품 포트폴리오의 복리 효과.',
+      source: 'https://www.threads.com/@binx_lab/post/DaEwxm1mCG3'
+    },
+    {
       slug: 'postgres-index-tuning',
       title: 'PostgreSQL 인덱스 튜닝 기초 (샘플)',
       category: 'Backend·Infra',
