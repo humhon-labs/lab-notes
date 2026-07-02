@@ -11,16 +11,28 @@
       catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
     })();
   </script>
+  <script>
+    (function () {
+      function detect() {
+        try { var s = localStorage.getItem('labnotes-lang'); if (s === 'ko' || s === 'en') return s; } catch (e) {}
+        try { var n = (navigator.languages && navigator.languages[0]) || navigator.language || ''; if (n.toLowerCase().indexOf('ko') === 0) return 'ko'; if (n) return 'en'; } catch (e) {}
+        return 'ko';
+      }
+      try { document.documentElement.setAttribute('data-lang', detect()); }
+      catch (e) { document.documentElement.setAttribute('data-lang', 'ko'); }
+    })();
+  </script>
 </head>
 <body>
-  <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+  <a class="skip-link" href="#content" data-i18n="skip_to_content">본문으로 건너뛰기</a>
   <header class="site-header">
     <a class="brand" href="index.html">
       <span class="brand-mark">🧪</span>
-      <span class="brand-text"><strong>Humhon Labs Notes</strong><small>기술 지식과 실무 경험을 기록하고 공유합니다</small></span>
+      <span class="brand-text"><strong>Humhon Labs Notes</strong><small data-i18n="tagline">기술 지식과 실무 경험을 기록하고 공유합니다</small></span>
     </a>
     <div class="header-actions">
-      <a class="text-btn" href="index.html">← 목록</a>
+      <a class="text-btn" href="index.html" data-i18n="to_list">← 목록</a>
+      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="언어 전환"></button>
       <button id="theme-toggle" class="icon-btn" type="button" aria-label="테마 전환">🌙</button>
     </div>
     <div id="read-progress" class="read-progress" aria-hidden="true"></div>
@@ -29,7 +41,7 @@
   <main id="content" class="post-layout" tabindex="-1">
     <aside id="toc-wrap" class="toc" style="display:none" aria-label="목차">
       <details id="toc-details" class="toc-details" open>
-        <summary class="section-label">목차</summary>
+        <summary class="section-label" data-i18n="toc">목차</summary>
         <div id="toc" class="toc-list"></div>
       </details>
     </aside>
@@ -39,9 +51,9 @@
       <div id="post-body" class="post-body markdown"></div>
 
       <section id="post-footer" class="post-footer" style="display:none">
-        <div class="section-label">관련 글</div>
+        <div class="section-label" data-i18n="related">관련 글</div>
         <ul id="related" class="related-grid"></ul>
-        <p id="no-related" class="no-related" style="display:none">같은 태그의 다른 글이 아직 없습니다.</p>
+        <p id="no-related" class="no-related" style="display:none" data-i18n="no_related">같은 태그의 다른 글이 아직 없습니다.</p>
         <div id="prev-next" class="prev-next"></div>
       </section>
     </article>
@@ -50,6 +62,7 @@
   <footer class="site-footer">© Humhon Labs Notes</footer>
 
   <script src="data/posts.js"></script>
+  <script src="assets/lang.js"></script>
   <script src="assets/marked.min.js"></script>
   <script src="assets/post.js"></script>
   <script src="assets/theme.js"></script>

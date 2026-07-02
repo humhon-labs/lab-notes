@@ -70,6 +70,20 @@ a:hover { text-decoration: underline; }
   background: var(--bg-soft); border: 1px solid var(--border); color: var(--text);
   border-radius: 8px; width: 38px; height: 38px; font-size: 16px; cursor: pointer;
 }
+.lang-toggle {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  color: var(--text-dim); border-radius: 8px; padding: 6px 10px;
+  font-size: 12px; font-weight: 600; letter-spacing: .02em; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.lang-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.lang-toggle .lang-opt.on { color: var(--accent); }
+.lang-toggle .lang-sep { color: var(--border-strong); font-weight: 400; }
+.lang-banner {
+  margin: 0 0 20px; padding: 10px 14px; border-radius: 8px;
+  background: var(--bg-soft); border: 1px solid var(--border);
+  color: var(--text-dim); font-size: 13.5px;
+}
 .icon-btn:focus-visible, .cat-tab:focus-visible, .tag-chip:focus-visible,
 .card:focus-visible, .mini-card:focus-visible, .pn-card:focus-visible,
 .toc-link:focus-visible, .copy-btn:focus-visible, .reset-btn:focus-visible,

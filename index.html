@@ -11,29 +11,41 @@
       catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
     })();
   </script>
+  <script>
+    (function () {
+      function detect() {
+        try { var s = localStorage.getItem('labnotes-lang'); if (s === 'ko' || s === 'en') return s; } catch (e) {}
+        try { var n = (navigator.languages && navigator.languages[0]) || navigator.language || ''; if (n.toLowerCase().indexOf('ko') === 0) return 'ko'; if (n) return 'en'; } catch (e) {}
+        return 'ko';
+      }
+      try { document.documentElement.setAttribute('data-lang', detect()); }
+      catch (e) { document.documentElement.setAttribute('data-lang', 'ko'); }
+    })();
+  </script>
 </head>
 <body>
-  <a class="skip-link" href="#content">본문으로 건너뛰기</a>
+  <a class="skip-link" href="#content" data-i18n="skip_to_content">본문으로 건너뛰기</a>
   <header class="site-header">
     <a class="brand" href="index.html">
       <span class="brand-mark">🧪</span>
-      <div class="brand-text"><h1>Humhon Labs Notes</h1><small>기술 지식과 실무 경험을 기록하고 공유합니다</small></div>
+      <div class="brand-text"><h1>Humhon Labs Notes</h1><small data-i18n="tagline">기술 지식과 실무 경험을 기록하고 공유합니다</small></div>
     </a>
     <div class="header-actions">
       <div class="search-wrap">
-        <input id="search" type="search" placeholder="검색: 제목·태그·요약" aria-label="글 검색" />
+        <input id="search" type="search" placeholder="검색: 제목·태그·요약" aria-label="글 검색" data-i18n-attr="placeholder:search_placeholder;aria-label:search_aria" />
         <span class="kbd-hint" aria-hidden="true">/</span>
       </div>
+      <button id="lang-toggle" class="lang-toggle" type="button" aria-label="언어 전환"></button>
       <button id="theme-toggle" class="icon-btn" type="button" aria-label="테마 전환">🌙</button>
     </div>
   </header>
 
-  <nav class="filters" aria-label="필터">
+  <nav class="filters" aria-label="필터" data-i18n-attr="aria-label:filters_aria">
     <div id="category-nav" class="category-nav"></div>
     <div class="tag-row">
-      <span class="tag-row-label">태그 필터</span>
+      <span class="tag-row-label" data-i18n="tag_filter_label">태그 필터</span>
       <span id="tag-filter" class="tag-filter"></span>
-      <button id="clear-tags" class="text-btn" type="button" style="display:none">초기화</button>
+      <button id="clear-tags" class="text-btn" type="button" style="display:none" data-i18n="clear">초기화</button>
     </div>
   </nav>
 
@@ -42,14 +54,15 @@
     <div id="featured"></div>
     <ul id="post-list" class="post-grid"></ul>
     <div id="empty-state" class="empty" style="display:none">
-      <p>조건에 맞는 글이 없습니다.</p>
-      <button id="reset-all" class="reset-btn" type="button">필터 초기화</button>
+      <p data-i18n="empty">조건에 맞는 글이 없습니다.</p>
+      <button id="reset-all" class="reset-btn" type="button" data-i18n="reset_filters">필터 초기화</button>
     </div>
   </main>
 
   <footer class="site-footer">© Humhon Labs Notes</footer>
 
   <script src="data/posts.js"></script>
+  <script src="assets/lang.js"></script>
   <script src="assets/app.js"></script>
   <script src="assets/theme.js"></script>
 </body>
