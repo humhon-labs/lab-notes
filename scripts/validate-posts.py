@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""data/posts.js 데이터 모델 검증.
+"""data/posts.js 데이터 모델 검증 (KO/EN 다국어 모델).
 
 용도 두 가지:
 1. PostToolUse 훅: stdin의 훅 입력 JSON에서 file_path를 읽어
@@ -9,7 +9,9 @@
 검증 항목:
 - category는 정확히 4종 중 하나 (중간점 U+00B7 '·')
 - date는 YYYY-MM-DD 형식의 유효한 날짜
-- slug ↔ content/<slug>.md 양방향 1:1 일치
+- title/summary는 {ko,en} 객체(ko 필수, en 선택) 또는 문자열(하위호환)
+- slug ↔ content/<slug>.ko.md 필수 대응 (영어본 <slug>.en.md 는 선택)
+- content/*.md 는 <slug>.ko.md / <slug>.en.md 형식이며 slug가 posts에 존재
 - 필수 필드(slug, title, category, tags, date, summary) 존재
 - posts 배열이 date 내림차순 정렬
 
@@ -28,6 +30,9 @@ CONTENT_DIR = ROOT / "content"
 VALID_CATEGORIES = {"AI·Data", "Backend·Infra", "Product·Ops", "PM"}
 REQUIRED_FIELDS = ("slug", "title", "category", "tags", "date", "summary")
 
+# 1단계 중첩(title/summary의 {ko,en})을 허용해 글 객체를 통째로 잡는다.
+POST_OBJECT_RE = r"\{(?:[^{}]|\{[^{}]*\})*\}"
+
 
 def should_run_from_hook_input():
     """훅 stdin 입력을 읽어 관련 파일 변경인지 판단한다."""
@@ -42,16 +47,42 @@ def should_run_from_hook_input():
 
 
 def parse_posts(src):
-    """posts.js에서 글 객체들을 추출한다. (객체에 중첩 중괄호가 없다는 전제)"""
+    """posts.js에서 글 객체들을 추출한다.
+
+    title/summary는 {ko,en} 객체 또는 문자열을 모두 지원한다.
+    객체면 값을 'OBJ'로 두고 <field>_langs 에 {'ko': bool, 'en': bool} 을,
+    문자열이면 그 값과 <field>_langs=None 을 채운다.
+    """
     posts = []
-    for block in re.findall(r"\{[^{}]*\}", src):
+    for block in re.findall(POST_OBJECT_RE, src):
+        if not re.search(r"\bslug\s*:", block):
+            continue
         post = {}
-        for key in REQUIRED_FIELDS + ("source",):
-            m = re.search(r"\b%s\s*:\s*('([^']*)'|\[[^\]]*\])" % key, block)
+        for key in ("slug", "category", "date"):
+            m = re.search(r"\b%s\s*:\s*'([^']*)'" % key, block)
             if m:
-                post[key] = m.group(2) if m.group(2) is not None else m.group(1)
-        if post:
-            posts.append(post)
+                post[key] = m.group(1)
+        m = re.search(r"\btags\s*:\s*(\[[^\]]*\])", block)
+        if m:
+            post["tags"] = m.group(1)
+        for key in ("title", "summary"):
+            mo = re.search(r"\b%s\s*:\s*(\{[^{}]*\})" % key, block)
+            if mo:
+                inner = mo.group(1)
+                post[key] = "OBJ"
+                post[key + "_langs"] = {
+                    "ko": bool(re.search(r"\bko\s*:", inner)),
+                    "en": bool(re.search(r"\ben\s*:", inner)),
+                }
+            else:
+                ms = re.search(r"\b%s\s*:\s*'([^']*)'" % key, block)
+                if ms:
+                    post[key] = ms.group(1)
+                    post[key + "_langs"] = None
+        m = re.search(r"\bsource\s*:\s*'([^']*)'", block)
+        if m:
+            post["source"] = m.group(1)
+        posts.append(post)
     return posts
 
 
@@ -71,6 +102,12 @@ def validate():
         for field in REQUIRED_FIELDS:
             if field not in p or p[field] == "":
                 errors.append(f"[{label}] 필수 필드 누락: {field}")
+
+        # title/summary가 {ko,en} 객체면 ko 필수, en은 선택
+        for key in ("title", "summary"):
+            langs = p.get(key + "_langs")
+            if langs is not None and not langs.get("ko"):
+                errors.append(f"[{label}] {key}.ko 누락 — ko는 필수입니다.")
 
         cat = p.get("category")
         if cat and cat not in VALID_CATEGORIES:
@@ -93,15 +130,23 @@ def validate():
         slug = p.get("slug")
         if slug:
             slugs.append(slug)
-            if not (CONTENT_DIR / f"{slug}.md").exists():
-                errors.append(f"[{label}] content/{slug}.md 파일이 없습니다.")
+            if not (CONTENT_DIR / f"{slug}.ko.md").exists():
+                errors.append(f"[{label}] content/{slug}.ko.md 파일이 없습니다 (ko 필수).")
 
     dup = {s for s in slugs if slugs.count(s) > 1}
     if dup:
         errors.append(f"slug 중복: {', '.join(sorted(dup))}")
 
     for md in sorted(CONTENT_DIR.glob("*.md")):
-        if md.stem not in slugs:
+        stem = md.name[:-3]  # ".md" 제거 → "loop-engineering.ko"
+        m = re.match(r"^(.+)\.(ko|en)$", stem)
+        if not m:
+            errors.append(
+                f"content/{md.name} 이름이 <slug>.ko.md / <slug>.en.md 형식이 아닙니다."
+            )
+            continue
+        base = m.group(1)
+        if base not in slugs:
             errors.append(f"content/{md.name} 에 대응하는 posts.js 항목이 없습니다.")
 
     if dates != sorted(dates, reverse=True):
