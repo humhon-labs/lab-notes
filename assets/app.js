@@ -102,9 +102,10 @@
     if (state.category !== 'all' && p.category !== state.category) return false;
     if (state.tags.size) {
       var pt = p.tags || [];
-      var ok = true;
-      state.tags.forEach(function (t) { if (pt.indexOf(t) === -1) ok = false; });
-      if (!ok) return false;
+      var any = false;
+      // 태그 다중 선택은 OR: 선택한 태그 중 하나라도 포함하면 통과
+      state.tags.forEach(function (t) { if (pt.indexOf(t) !== -1) any = true; });
+      if (!any) return false;
     }
     if (state.q) {
       var both = function (o) { return (o && typeof o === 'object') ? ((o.ko || '') + ' ' + (o.en || '')) : (o || ''); };
