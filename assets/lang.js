@@ -71,10 +71,21 @@
   };
 
   var TAG_LABELS = {
+    // 기존 글에서 쓰는 관리용 태그
     '중요':     { ko: '중요',     en: 'Important' },
     '경제':     { ko: '경제',     en: 'Economy' },
     '기술검토': { ko: '기술검토', en: 'Tech Review' },
-    'DevOps':   { ko: 'DevOps',   en: 'DevOps' }
+    'DevOps':   { ko: 'DevOps',   en: 'DevOps' },
+    // 본문 주제 기반 태그 (언어 중립 kebab 키)
+    'llm':            { ko: 'LLM',          en: 'LLM' },
+    'rag':            { ko: 'RAG',          en: 'RAG' },
+    'knowledge-mgmt': { ko: '지식관리',     en: 'Knowledge Mgmt' },
+    'obsidian':       { ko: 'Obsidian',     en: 'Obsidian' },
+    'ai-agent':       { ko: 'AI 에이전트',  en: 'AI Agent' },
+    'agent-skills':   { ko: 'Agent Skills', en: 'Agent Skills' },
+    'claude-code':    { ko: 'Claude Code',  en: 'Claude Code' },
+    'automation':     { ko: '자동화',       en: 'Automation' },
+    'architecture':   { ko: '아키텍처',     en: 'Architecture' }
   };
 
   function detect() {
