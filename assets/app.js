@@ -1,5 +1,6 @@
 (function () {
   var CATEGORIES = ['AI·Data', 'Backend·Infra', 'Product·Ops', 'PM'];
+  var L = window.LabLang;
   var posts = (window.LAB_NOTES && window.LAB_NOTES.posts) ? window.LAB_NOTES.posts.slice() : [];
   posts.sort(function (a, b) { return (b.date || '').localeCompare(a.date || ''); });
 
@@ -50,7 +51,7 @@
       var b = document.createElement('button');
       b.type = 'button';
       b.className = 'cat-tab';
-      b.textContent = c === 'all' ? '전체' : c;
+      b.textContent = c === 'all' ? L.t('all') : c;
       b.addEventListener('click', function () { state.category = c; syncUrl(); updateNav(); render(); });
       navEl.appendChild(b);
       navBtns.push({ cat: c, el: b });
@@ -92,7 +93,7 @@
       var active = state.tags.has(x.tag);
       x.el.classList.toggle('active', active);
       x.el.setAttribute('aria-pressed', active ? 'true' : 'false');
-      x.el.innerHTML = (active ? '✓ ' : '') + '#' + escapeHtml(x.tag) + ' <span class="tag-count">' + tagCounts[x.tag] + '</span>';
+      x.el.innerHTML = (active ? '✓ ' : '') + '#' + escapeHtml(L.tagLabel(x.tag)) + ' <span class="tag-count">' + tagCounts[x.tag] + '</span>';
     });
     clearBtn.style.display = state.tags.size ? '' : 'none';
   }
@@ -106,7 +107,8 @@
       if (!ok) return false;
     }
     if (state.q) {
-      var hay = (p.title + ' ' + (p.summary || '') + ' ' + (p.tags || []).join(' ')).toLowerCase();
+      var both = function (o) { return (o && typeof o === 'object') ? ((o.ko || '') + ' ' + (o.en || '')) : (o || ''); };
+      var hay = (both(p.title) + ' ' + both(p.summary) + ' ' + (p.tags || []).join(' ')).toLowerCase();
       if (hay.indexOf(state.q) === -1) return false;
     }
     return true;
@@ -116,14 +118,14 @@
     var a = document.createElement('a');
     a.className = 'card' + (featured ? ' featured' : '');
     a.href = 'post.html?slug=' + encodeURIComponent(p.slug);
-    var tagsHtml = (p.tags || []).map(function (t) { return '<span class="tag">#' + escapeHtml(t) + '</span>'; }).join('');
+    var tagsHtml = (p.tags || []).map(function (t) { return '<span class="tag">#' + escapeHtml(L.tagLabel(t)) + '</span>'; }).join('');
     a.innerHTML =
       '<div class="card-top"><span class="badge">' + escapeHtml(p.category) + '</span>' +
       '<time>' + escapeHtml(p.date || '') + '</time></div>' +
-      '<h2>' + escapeHtml(p.title) + '</h2>' +
-      '<p class="summary">' + escapeHtml(p.summary || '') + '</p>' +
+      '<h2>' + escapeHtml(L.pick(p.title)) + '</h2>' +
+      '<p class="summary">' + escapeHtml(L.pick(p.summary)) + '</p>' +
       '<div class="card-foot"><div class="tags">' + tagsHtml + '</div>' +
-      '<span class="read-min">' + (p.readMin || 1) + (featured ? '분 읽기' : '분') + '</span></div>';
+      '<span class="read-min">' + (p.readMin || 1) + (featured ? L.t('read_min_full') : L.t('read_min_card')) + '</span></div>';
     return a;
   }
 
@@ -140,7 +142,7 @@
       });
     }
     emptyEl.style.display = filtered.length ? 'none' : '';
-    if (countEl) countEl.textContent = filtered.length + '개의 글';
+    if (countEl) countEl.textContent = filtered.length + L.t('count_suffix');
   }
 
   searchEl.value = state.q;

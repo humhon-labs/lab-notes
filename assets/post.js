@@ -1,4 +1,5 @@
 (function () {
+  var L = window.LabLang;
   var params = new URLSearchParams(location.search);
   var slug = params.get('slug');
   var posts = ((window.LAB_NOTES && window.LAB_NOTES.posts) || []).slice();
@@ -23,19 +24,19 @@
   }
 
   if (!slug || !meta) {
-    document.title = '글을 찾을 수 없음 · Humhon Labs Notes';
+    document.title = L.t('not_found_title') + L.t('post_title_suffix');
     metaEl.innerHTML = '';
-    bodyEl.innerHTML = '<p class="notice">요청한 글을 찾을 수 없습니다. <a href="index.html">목록으로 돌아가기</a></p>';
+    bodyEl.innerHTML = '<p class="notice">' + L.t('not_found_body') + '<a href="index.html">' + L.t('to_list_link') + '</a></p>';
     return;
   }
 
-  document.title = meta.title + ' · Humhon Labs Notes';
-  var tagsHtml = (meta.tags || []).map(function (t) { return '<span class="tag">#' + esc(t) + '</span>'; }).join('');
-  var srcHtml = meta.source ? '<a class="source" href="' + esc(meta.source) + '" target="_blank" rel="noopener">원본 링크 ↗</a>' : '';
+  document.title = L.pick(meta.title) + L.t('post_title_suffix');
+  var tagsHtml = (meta.tags || []).map(function (t) { return '<span class="tag">#' + esc(L.tagLabel(t)) + '</span>'; }).join('');
+  var srcHtml = meta.source ? '<a class="source" href="' + esc(meta.source) + '" target="_blank" rel="noopener">' + L.t('source_link') + '</a>' : '';
   metaEl.innerHTML =
     '<div class="card-top"><span class="badge">' + esc(meta.category) + '</span>' +
-    '<span class="post-info">' + (meta.readMin || 1) + '분 읽기 · <time>' + esc(meta.date || '') + '</time></span></div>' +
-    '<h1>' + esc(meta.title) + '</h1>' +
+    '<span class="post-info">' + (meta.readMin || 1) + L.t('read_min_full') + ' · <time>' + esc(meta.date || '') + '</time></span></div>' +
+    '<h1>' + esc(L.pick(meta.title)) + '</h1>' +
     '<div class="tags">' + tagsHtml + '</div>' + srcHtml;
 
   function miniCard(p) {
@@ -44,8 +45,8 @@
     a.href = 'post.html?slug=' + encodeURIComponent(p.slug);
     a.innerHTML =
       '<div class="mini-top"><span class="badge">' + esc(p.category) + '</span>' +
-      '<span class="read-min">' + (p.readMin || 1) + '분</span></div>' +
-      '<div class="mini-title">' + esc(p.title) + '</div>';
+      '<span class="read-min">' + (p.readMin || 1) + L.t('read_min_card') + '</span></div>' +
+      '<div class="mini-title">' + esc(L.pick(p.title)) + '</div>';
     return a;
   }
 
@@ -76,14 +77,14 @@
       var a = document.createElement('a');
       a.className = 'pn-card prev';
       a.href = 'post.html?slug=' + encodeURIComponent(older.slug);
-      a.innerHTML = '<div class="pn-label">← 이전 글</div><div class="pn-title">' + esc(older.title) + '</div>';
+      a.innerHTML = '<div class="pn-label">' + L.t('prev') + '</div><div class="pn-title">' + esc(L.pick(older.title)) + '</div>';
       prevNextEl.appendChild(a);
     }
     if (newer) {
       var b = document.createElement('a');
       b.className = 'pn-card next';
       b.href = 'post.html?slug=' + encodeURIComponent(newer.slug);
-      b.innerHTML = '<div class="pn-label">다음 글 →</div><div class="pn-title">' + esc(newer.title) + '</div>';
+      b.innerHTML = '<div class="pn-label">' + L.t('next') + '</div><div class="pn-title">' + esc(L.pick(newer.title)) + '</div>';
       prevNextEl.appendChild(b);
     }
   }
@@ -141,14 +142,14 @@
       btn.type = 'button';
       btn.className = 'copy-btn';
       btn.setAttribute('aria-live', 'polite');
-      btn.textContent = '복사';
+      btn.textContent = L.t('copy');
       btn.addEventListener('click', function () {
         var code = pre.querySelector('code');
         var text = code ? code.textContent : pre.textContent;
         var done = function () {
-          btn.textContent = '복사됨 ✓';
+          btn.textContent = L.t('copied');
           btn.classList.add('copied');
-          setTimeout(function () { btn.textContent = '복사'; btn.classList.remove('copied'); }, 1500);
+          setTimeout(function () { btn.textContent = L.t('copy'); btn.classList.remove('copied'); }, 1500);
         };
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done).catch(done);
         else done();
@@ -157,31 +158,47 @@
     });
   }
 
-  fetch('content/' + encodeURIComponent(slug) + '.md')
+  // 신뢰-콘텐츠 전제: content/*.md는 직접 작성한 문서라 marked 출력을 살균 없이 렌더한다
+  // (콜아웃/표/<details> 등 의도한 HTML 통과 필요). 외부 기여 마크다운을 받게 되면 살균기를 추가할 것.
+  function finishRender(md, koFallback) {
+    var html = marked.parse(md);
+    if (koFallback) {
+      html = '<div class="lang-banner">' + esc(L.t('korean_only_banner')) + '</div>' + html;
+    }
+    bodyEl.innerHTML = html;
+    // 표는 div로 감싸 가로 스크롤을 처리한다 (table에 display:block을 주면 표 시맨틱이 깨짐)
+    bodyEl.querySelectorAll('table').forEach(function (t) {
+      var wrap = document.createElement('div');
+      wrap.className = 'table-wrap';
+      t.parentNode.insertBefore(wrap, t);
+      wrap.appendChild(t);
+    });
+    buildToc();
+    injectCopyButtons();
+    renderFooter();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    if (location.hash) {
+      var target = document.getElementById(location.hash.slice(1));
+      if (target) target.scrollIntoView();
+    }
+  }
+
+  function showLoadError() {
+    bodyEl.innerHTML = '<p class="notice">' + L.t('load_error') + '</p>';
+    renderFooter();
+  }
+
+  var lang = L.get();
+  fetch('content/' + encodeURIComponent(slug) + '.' + lang + '.md')
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
-    // 신뢰-콘텐츠 전제: content/*.md는 직접 작성한 문서라 marked 출력을 살균 없이 렌더한다
-    // (콜아웃/표/<details> 등 의도한 HTML 통과 필요). 외부 기여 마크다운을 받게 되면 살균기를 추가할 것.
-    .then(function (md) {
-      bodyEl.innerHTML = marked.parse(md);
-      // 표는 div로 감싸 가로 스크롤을 처리한다 (table에 display:block을 주면 표 시맨틱이 깨짐)
-      bodyEl.querySelectorAll('table').forEach(function (t) {
-        var wrap = document.createElement('div');
-        wrap.className = 'table-wrap';
-        t.parentNode.insertBefore(wrap, t);
-        wrap.appendChild(t);
-      });
-      buildToc();
-      injectCopyButtons();
-      renderFooter();
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-      if (location.hash) {
-        var target = document.getElementById(location.hash.slice(1));
-        if (target) target.scrollIntoView();
-      }
-    })
+    .then(function (md) { finishRender(md, false); })
     .catch(function () {
-      bodyEl.innerHTML = '<p class="notice">본문을 불러오지 못했습니다. 이 사이트는 정적 서버로 열어야 합니다(예: <code>python3 -m http.server</code>). 파일을 직접 연 경우 브라우저 보안 정책으로 마크다운을 불러올 수 없습니다.</p>';
-      renderFooter();
+      if (lang === 'ko') { showLoadError(); return; }
+      // 영어본이 없으면 한국어로 fallback + 안내 배너
+      fetch('content/' + encodeURIComponent(slug) + '.ko.md')
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+        .then(function (md) { finishRender(md, true); })
+        .catch(function () { showLoadError(); });
     });
 })();
