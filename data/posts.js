@@ -2,6 +2,7 @@ window.LAB_NOTES = {
   posts: [
     {
       slug: 'loop-engineering',
+      readMin: 12,
       title: '루프가 되지 마라 — 잠자는 동안 Claude가 일하게 하라',
       category: 'AI·Data',
       tags: ['중요', 'DevOps', '기술검토'],
@@ -11,6 +12,7 @@ window.LAB_NOTES = {
     },
     {
       slug: 'marc-lou-solo-saas',
+      readMin: 6,
       title: '마크 루(Marc Lou)가 혼자서 SaaS·AI 제품을 키운 7가지 방법',
       category: 'Product·Ops',
       tags: ['경제', '중요'],
@@ -20,6 +22,7 @@ window.LAB_NOTES = {
     },
     {
       slug: 'postgres-index-tuning',
+      readMin: 3,
       title: 'PostgreSQL 인덱스 튜닝 기초 (샘플)',
       category: 'Backend·Infra',
       tags: ['기술검토', 'DevOps'],
@@ -28,6 +31,7 @@ window.LAB_NOTES = {
     },
     {
       slug: 'onboarding-metrics',
+      readMin: 2,
       title: '제품 온보딩 지표 설계 (샘플)',
       category: 'Product·Ops',
       tags: ['중요'],
@@ -36,6 +40,7 @@ window.LAB_NOTES = {
     },
     {
       slug: 'retro-to-action',
+      readMin: 2,
       title: '스프린트 회고를 액션으로 바꾸기 (샘플)',
       category: 'PM',
       tags: ['기술검토'],

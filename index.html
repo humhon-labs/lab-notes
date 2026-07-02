@@ -13,33 +13,38 @@
   </script>
 </head>
 <body>
+  <a class="skip-link" href="#content">본문으로 건너뛰기</a>
   <header class="site-header">
     <a class="brand" href="index.html">
       <span class="brand-mark">🧪</span>
-      <span class="brand-text"><strong>Humhon Labs Notes</strong><small>기술 지식과 실무 경험을 기록하고 공유합니다</small></span>
+      <div class="brand-text"><h1>Humhon Labs Notes</h1><small>기술 지식과 실무 경험을 기록하고 공유합니다</small></div>
     </a>
     <div class="header-actions">
-      <input id="search" type="search" placeholder="검색: 제목·태그·요약" aria-label="글 검색" />
+      <div class="search-wrap">
+        <input id="search" type="search" placeholder="검색: 제목·태그·요약" aria-label="글 검색" />
+        <span class="kbd-hint" aria-hidden="true">/</span>
+      </div>
       <button id="theme-toggle" class="icon-btn" type="button" aria-label="테마 전환">🌙</button>
     </div>
   </header>
 
-  <nav id="category-nav" class="category-nav" aria-label="카테고리"></nav>
+  <nav class="filters" aria-label="필터">
+    <div id="category-nav" class="category-nav"></div>
+    <div class="tag-row">
+      <span class="tag-row-label">태그 필터</span>
+      <span id="tag-filter" class="tag-filter"></span>
+      <button id="clear-tags" class="text-btn" type="button" style="display:none">초기화</button>
+    </div>
+  </nav>
 
-  <main class="layout">
-    <aside class="sidebar">
-      <div class="sidebar-head">
-        <h2>태그</h2>
-        <button id="clear-tags" class="text-btn" type="button" style="display:none">초기화</button>
-      </div>
-      <div id="tag-filter" class="tag-filter"></div>
-    </aside>
-
-    <section class="content">
-      <div id="result-count" class="result-count" aria-live="polite"></div>
-      <div id="post-list" class="post-list"></div>
-      <p id="empty-state" class="empty" style="display:none">조건에 맞는 글이 없습니다.</p>
-    </section>
+  <main id="content" class="list-main" tabindex="-1">
+    <div id="result-count" class="result-count" aria-live="polite"></div>
+    <div id="featured"></div>
+    <ul id="post-list" class="post-grid"></ul>
+    <div id="empty-state" class="empty" style="display:none">
+      <p>조건에 맞는 글이 없습니다.</p>
+      <button id="reset-all" class="reset-btn" type="button">필터 초기화</button>
+    </div>
   </main>
 
   <footer class="site-footer">© Humhon Labs Notes</footer>

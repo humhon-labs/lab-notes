@@ -13,6 +13,7 @@
   </script>
 </head>
 <body>
+  <a class="skip-link" href="#content">본문으로 건너뛰기</a>
   <header class="site-header">
     <a class="brand" href="index.html">
       <span class="brand-mark">🧪</span>
@@ -22,13 +23,27 @@
       <a class="text-btn" href="index.html">← 목록</a>
       <button id="theme-toggle" class="icon-btn" type="button" aria-label="테마 전환">🌙</button>
     </div>
+    <div id="read-progress" class="read-progress" aria-hidden="true"></div>
   </header>
 
-  <main class="layout single">
+  <main id="content" class="post-layout" tabindex="-1">
+    <aside id="toc-wrap" class="toc" style="display:none" aria-label="목차">
+      <details id="toc-details" class="toc-details" open>
+        <summary class="section-label">목차</summary>
+        <div id="toc" class="toc-list"></div>
+      </details>
+    </aside>
+
     <article class="post">
       <header id="post-meta" class="post-meta"></header>
       <div id="post-body" class="post-body markdown"></div>
-      <p class="back"><a href="index.html">← 목록으로 돌아가기</a></p>
+
+      <section id="post-footer" class="post-footer" style="display:none">
+        <div class="section-label">관련 글</div>
+        <ul id="related" class="related-grid"></ul>
+        <p id="no-related" class="no-related" style="display:none">같은 태그의 다른 글이 아직 없습니다.</p>
+        <div id="prev-next" class="prev-next"></div>
+      </section>
     </article>
   </main>
 

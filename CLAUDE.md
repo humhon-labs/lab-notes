@@ -9,7 +9,8 @@
 
 ## 규칙 (중요)
 
-- 작업 중 대화, UI 문구, 콘텐츠는 **한국어**를 기본으로 한다.
+- 작업 중 대화, UI 문구, 콘텐츠는 **한국어**와 **영어**를 동시에 제공한다. 
+- 소스 컨텐츠가 하나의 언어만 제공하면 다른 언어는 번역하여 제공한다.
 - **빌드 단계를 도입하지 않는다.** 번들러/트랜스파일러/`package.json` 금지. 정적 파일 그대로 배포한다.
 - 외부 런타임 요청 없음: 서드파티 JS는 CDN이 아니라 로컬에 **벤더링**한다 (`assets/marked.min.js` = marked v12.0.0, 직접 수정 금지).
 - 부득이 npm 의존성을 추가하게 되면 버전을 `^`/`~` 없이 **정확히 고정**하고, 설치는 `npm ci`를 기본으로 하며, 사용자 확인 후 진행한다.
@@ -39,8 +40,9 @@ docs/superpowers/   설계 spec + 구현 plan
 
 ## 데이터 모델 (`data/posts.js`)
 
-각 글 객체: `{ slug, title, category, tags[], date('YYYY-MM-DD'), summary, source? }`
+각 글 객체: `{ slug, readMin, title, category, tags[], date('YYYY-MM-DD'), summary, source? }`
 - `slug` = `content/{slug}.md` 파일명과 일치.
+- `readMin` = 예상 읽기 시간(분, 숫자). 목록 카드·상세 헤더에 "N분 읽기"로 표시, 생략 시 1로 취급.
 - `category`는 정확히 다음 4종 중 하나 (중간점은 U+00B7 `·`): `AI·Data`, `Backend·Infra`, `Product·Ops`, `PM`.
 - `tags`는 자유 확장. 목록의 태그 필터는 posts에서 동적으로 수집한다.
 - 목록은 `date` 내림차순 정렬. 필터 3종(카테고리·태그·검색)은 AND로 함께 적용, 태그도 다중 선택 시 AND.
