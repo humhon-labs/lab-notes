@@ -76,6 +76,7 @@
     '경제':     { ko: '경제',     en: 'Economy' },
     '기술검토': { ko: '기술검토', en: 'Tech Review' },
     'DevOps':   { ko: 'DevOps',   en: 'DevOps' },
+    '프롬프트': { ko: '프롬프트', en: 'Prompting' },
     // 본문 주제 기반 태그 (언어 중립 kebab 키)
     'llm':            { ko: 'LLM',          en: 'LLM' },
     'rag':            { ko: 'RAG',          en: 'RAG' },

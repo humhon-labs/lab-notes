@@ -197,7 +197,9 @@ a:hover { text-decoration: underline; }
 
 .markdown h1 { display: none; }
 .markdown h2 { margin-top: 32px; border-bottom: 1px solid var(--border); padding-bottom: 6px; font-size: 21px; scroll-margin-top: 90px; }
-.markdown h3 { margin-top: 24px; font-size: 17px; }
+/* 본문 내부 앵커(§ 링크 대상): sticky 헤더에 가려지지 않게 offset */
+.markdown .anchor { scroll-margin-top: 90px; }
+.markdown h3 { margin-top: 24px; font-size: 17px; scroll-margin-top: 90px; }
 .markdown p, .markdown li { font-size: 15.5px; line-height: 1.75; }
 .markdown blockquote {
   margin: 16px 0; padding: 12px 16px; background: var(--bg-soft);

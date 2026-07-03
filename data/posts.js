@@ -1,6 +1,22 @@
 window.LAB_NOTES = {
   posts: [
     {
+      slug: 'claude-fable-5',
+      readMin: 10,
+      title: {
+        ko: 'Claude Fable 5 프롬프팅 가이드 요약 (개발자·기술 실무자용)',
+        en: 'Claude Fable 5 Prompting Guide — A Developer\'s Summary'
+      },
+      category: 'AI·Data',
+      tags: ['프롬프트', '기술검토', '중요'],
+      date: '2026-07-03',
+      summary: {
+        ko: 'Claude Fable 5는 "더 똑똑한 모델"이 아니라 "혼자·오래·끝까지 일하는 모델". 프롬프팅의 무게중심이 지시 강화에서 자율성의 경계 설정으로 이동한다 — API 변경점·프롬프트 스니펫·스캐폴딩 권장까지 실무 요약.',
+        en: 'Claude Fable 5 is less "a smarter model" than "a model that works alone, long, to the end." Prompting shifts from reinforcing instructions to setting the boundaries of autonomy — a practical summary of API changes, prompt snippets, and scaffolding advice.'
+      },
+      source: 'https://www.linkedin.com/posts/kimjooeon_claude-fable-5-prompting-guide-summary-share-7478223725356535808-XtLY/'
+    },
+    {
       slug: 'loop-engineering',
       readMin: 12,
       title: {
